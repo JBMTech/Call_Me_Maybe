@@ -3,10 +3,9 @@ install:
 		uv sync --all-groups
 
 run:
-		uv run python3 -m src/main.py \
+		uv run python -m src.main \
 		--functions_definition data/input/functions_definition.json \
-		--input data/input/functions_calling_tests.json \
-		--output data/output/function_calls.json
+		--input data/input/function_calling_tests.json
 
 debug:
 		uv run python3 -m pdb -m src
