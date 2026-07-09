@@ -14,6 +14,9 @@ clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 	find . -type d -name ".mypy_cache" -exec rm -rf {} +
 
+fclean: clean
+	rm -rf .venv
+
 lint:
 	uv run flake8 --exclude=.venv,llm_sdk .
 	uv run mypy . \
@@ -30,4 +33,4 @@ lint-strict: clean
 		--strict \
 		--exclude '^(venv|\.venv|env|llm_sdk)/'
 
-.PHONY: install run debug clean lint lint-strict
+.PHONY: install run debug clean fclean lint lint-strict

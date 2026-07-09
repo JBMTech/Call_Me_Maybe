@@ -1,9 +1,10 @@
 import argparse
 import json
-import sys
 
 from pydantic import ValidationError
+from .mind_llm import LLMInterface
 from .data_model import FunctionDefinition, TestPrompt
+
 
 def main():
     parser = argparse.ArgumentParser(description='Call_Me_Maybe')
@@ -15,6 +16,8 @@ def main():
                         type=argparse.FileType("r"),
                         required=True,
                         help="Ruta de fichero de JSON de Prompts")
+
+    # parser.add_argument('--output', type=str)
 
     args = parser.parse_args()
 
@@ -46,6 +49,9 @@ def main():
             print(f"Prompt: {line.prompt}")
             print("-" * 40)
 
+        interface = LLMInterface("Qwen/Qwen3-0.6B")
+        print(f"Modelo cargado correctamente {interface.model_name}")
+
     except (ValidationError, json.JSONDecodeError) as e:
         print(e)
     finally:
@@ -53,8 +59,6 @@ def main():
             args.functions_definition.close()
         if hasattr(args, "input") and args.input:
             args.input.close()
-
-    # parser.add_argument('--output', type=str)
 
 
 if __name__ == "__main__":
