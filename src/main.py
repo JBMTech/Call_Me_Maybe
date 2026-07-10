@@ -49,11 +49,11 @@ def main():
             print(f"Prompt: {line.prompt}")
             print("-" * 40)
 
-        interface = LLMInterface("Qwen/Qwen3-0.6B")
-        print(f"Modelo cargado correctamente {interface.model_name}")
+        # interface = LLMInterface("Qwen/Qwen3-0.6B")
+        # print(f"Modelo cargado correctamente {interface.model_name}")
 
     except (ValidationError, json.JSONDecodeError) as e:
-        print(e)
+        print(f"Invalid: {e}")
     finally:
         if hasattr(args, "functions_definition") and args.functions_definition:
             args.functions_definition.close()
