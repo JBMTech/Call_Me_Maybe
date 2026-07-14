@@ -1,47 +1,36 @@
-import argparse
 import json
 
 from pydantic import ValidationError
+
+from .arguments import (
+    get_arguments,
+    get_functions_definition,
+    get_functions_calling_tests,
+)
+
 from .mind_llm import LLMInterface
-from .data_model import FunctionDefinition, TestPrompt
 
 
-def main():
-    parser = argparse.ArgumentParser(description='Call_Me_Maybe')
-    parser.add_argument('--functions_definition',
-                        type=argparse.FileType("r"),
-                        required=True,
-                        help="Ruta del fichero JSON de Funciones")
-    parser.add_argument('--input',
-                        type=argparse.FileType("r"),
-                        required=True,
-                        help="Ruta de fichero de JSON de Prompts")
-
-    # parser.add_argument('--output', type=str)
-
-    args = parser.parse_args()
+def main() -> None:
+    try:
+        args = get_arguments()
+    except Exception as ex:
+        print(f'Invalid arguments. Please use --help to get help.'
+              f' ({ex})')
+        exit(1)
 
     try:
-        datos_json = json.load(args.functions_definition)
-        funciones = [
-            FunctionDefinition(**funcion)
-            for funcion in datos_json
-        ]
+        functions_definition = get_functions_definition(args)
 
-        print(f"\nSe han cargado {len(funciones)} funciones.\n")
-
-        for funcion in funciones:
+        print(f"\nSe han cargado {len(functions_definition)} funciones.\n")
+        for funcion in functions_definition:
             print(f"Nombre: {funcion.name}")
             print(f"Descripción: {funcion.description}")
             print(f"Parámetros: {list(funcion.parameters.keys())}")
             print(f"Retorno: {funcion.returns}")
             print("-" * 40)
 
-        datos_prompt = json.load(args.input)
-        prompts = [
-            TestPrompt(**prompt)
-            for prompt in datos_prompt
-        ]
+        prompts = get_functions_calling_tests(args)
 
         print(f"\nSe han cargado {len(prompts)} prompts.\n")
 
@@ -54,11 +43,6 @@ def main():
 
     except (ValidationError, json.JSONDecodeError) as e:
         print(f"Invalid: {e}")
-    finally:
-        if hasattr(args, "functions_definition") and args.functions_definition:
-            args.functions_definition.close()
-        if hasattr(args, "input") and args.input:
-            args.input.close()
 
 
 if __name__ == "__main__":

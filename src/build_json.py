@@ -13,16 +13,18 @@ class Builder(ABC):
 
         if not self.tokens:
             return {x[0] for x in options}
-        for option in [x for x in options if len(x) > len(self.tokens)]:
+        for option in options:
+            if len(option) <= len(self.tokens):
+                continue
             for option_token, token in zip(option, self.tokens):
                 if option_token != token:
                     break
-                else:
-                    result.add(option[len(self.tokens)])
+            else:
+                result.add(option[len(self.tokens)])
         return result
 
     @abstractmethod
-    def get_allewed(self) -> set[int]:
+    def get_allowed(self) -> set[int]:
         raise NotImplementedError()
 
     @abstractmethod
@@ -34,7 +36,7 @@ class BuilderEnd(Builder):
     def get_allowed(self) -> set[int]:
         return self._valid_tokens((self.context.end,))
 
-    def next_state(self) -> None:
+    def next_builder(self) -> None:
         return None
 
 
@@ -42,7 +44,7 @@ class BuilderSep(Builder):
     def get_allowed(self) -> set[int]:
         return self._valid_tokens((self.context.sep,))
 
-    def next_state(self) -> Builder:
+    def next_builder(self) -> Builder:
         return BuilderKey(self.context)
 
 
@@ -50,7 +52,7 @@ class BuilderValue(Builder):
     def get_allowed(self) -> set[int]:
         return {-1, -2}
 
-    def next_state(self) -> Builder:
+    def next_builder(self) -> Builder:
         if not self.context.parameters:
             return BuilderEnd(self.context)
         return BuilderSep(self.context)
@@ -60,7 +62,7 @@ class BuilderKVSep(Builder):
     def get_allowed(self) -> set[int]:
         return self._valid_tokens((self.context.kvsep,))
 
-    def next_state(self) -> Builder:
+    def next_builder(self) -> Builder:
         return BuilderValue(self.context)
 
 
@@ -68,7 +70,7 @@ class BuilderKey(Builder):
     def get_allowed(self) -> set[int]:
         return self._valid_tokens((self.context.parameters[0],))
 
-    def next_state(self) -> Builder:
+    def next_builder(self) -> Builder:
         self.context.parameters.pop(0)
         return BuilderKVSep(self.context)
 
@@ -77,7 +79,7 @@ class BuilderParameters(Builder):
     def get_allowed(self) -> set[int]:
         return self._valid_tokens((self.context.key,))
 
-    def next_state(self) -> Builder:
+    def next_builder(self) -> Builder:
         return BuilderKey(self.context)
 
 
@@ -85,7 +87,7 @@ class BuilderFunction(Builder):
     def get_allowed(self) -> set[int]:
         return self._valid_tokens(tuple(self.context.functions.keys()))
 
-    def next_state(self) -> Builder:
+    def next_builder(self) -> Builder:
         self.context.parameters = \
             self.context.functions[tuple(self.tokens)].copy()
         return BuilderParameters(self.context)
