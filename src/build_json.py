@@ -49,13 +49,7 @@ class BuilderSep(Builder):
 
 
 class BuilderValue(Builder):
-    def get_allowed(self) -> set[int]:
-        return {-1, -2}
-
-    def next_builder(self) -> Builder:
-        if not self.context.parameters:
-            return BuilderEnd(self.context)
-        return BuilderSep(self.context)
+    ...
 
 
 class BuilderKVSep(Builder):

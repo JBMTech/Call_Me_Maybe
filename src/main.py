@@ -41,8 +41,10 @@ def main() -> None:
         # interface = LLMInterface("Qwen/Qwen3-0.6B")
         # print(f"Modelo cargado correctamente {interface.model_name}")
 
-    except (ValidationError, json.JSONDecodeError) as e:
+    except ValidationError as e:
         print(f"Invalid: {e}")
+    except json.JSONDecodeError:
+        print("File invalid JSON")
 
 
 if __name__ == "__main__":

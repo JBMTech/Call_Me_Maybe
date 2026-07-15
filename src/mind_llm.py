@@ -9,6 +9,6 @@ class LLMInterface:
 
     def __init__(self,
                  model_name: str,
-                 defs: list[FunctionDefinition]):
-        self.model_name = Small_LLM_Model(model_name)
-        self.vocal: list[str] = list()
+                 funct_defs: list[FunctionDefinition]):
+        self.model = Small_LLM_Model(model_name)
+        self.vocal: list[str] = list(json.loads(Path(self.model.get_path_to_vocal_file()).read_text()).keys())
