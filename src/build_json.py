@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
-from .data_model import StateContext
+from .data_model import StructureContext
 
 
 class Builder(ABC):
-    def __init__(self, context: StateContext):
+    def __init__(self, context: StructureContext):
         super().__init__()
         self.context = context
         self.tokens: list[int] = []

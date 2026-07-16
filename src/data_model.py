@@ -21,7 +21,7 @@ class BuildJSON(BaseModel):
     parameters: dict[str, str | int | float | bool]
 
 
-class StateContext(BaseModel):
+class StructureContext(BaseModel):
     functions: dict[tuple[int, ...], list[tuple[int, ...]]]
     parameters: list[tuple[int, ...]] = []
     key: tuple[int, ...]
