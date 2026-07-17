@@ -18,7 +18,7 @@ class LLMInterface:
                     tuple(self.get_tokens(y))
                     for y in x.parameters.keys()]
                 for x in funct_def},
-            parameters=tuple(self.get_tokens('parameters":{"')),
+            parameters=[tuple(self.get_tokens('parameters":{"'))],
             kvsep=(tuple(self.get_tokens('":"'))),
             sep=tuple(self.get_tokens('","')),
             end=tuple(self.get_tokens('"}}\n')),
@@ -26,3 +26,6 @@ class LLMInterface:
 
     def get_tokens(self, string: str) -> list[int]:
         return self.model.encode(string)[0].tolist()
+
+    def get_logits_ids(self, list: list[int]) -> list[float]:
+        return self.model.get_logits_from_input_ids(list)

@@ -24,7 +24,6 @@ class BuildJSON(BaseModel):
 class StructureContext(BaseModel):
     functions: dict[tuple[int, ...], list[tuple[int, ...]]]
     parameters: list[tuple[int, ...]] = []
-    key: tuple[int, ...]
     kvsep: tuple[int, ...]
     sep: tuple[int, ...]
     end: tuple[int, ...]
