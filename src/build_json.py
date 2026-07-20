@@ -71,7 +71,7 @@ class BuilderKey(Builder):
 
 class BuilderParameters(Builder):
     def get_allowed(self) -> set[int]:
-        return self._valid_tokens((self.context.key,))
+        return self._valid_tokens((self.context.parameters,))
 
     def next_builder(self) -> Builder:
         return BuilderKey(self.context)
