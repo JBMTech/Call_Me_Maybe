@@ -57,13 +57,13 @@ class LLMInterface:
         best_token = None
         best_logit = float("-inf")
 
-        # recorrer todos los tokens permitidos
+        for token in allowed:
+            current_logit = logits[token]
 
-            # obtener el logit de ese token
+            if current_logit > best_logit:
 
-            # si es mejor que el actual
-                # guardar token
-                # guardar logit
+                best_logit = current_logit
+                best_token = token
 
         return best_token
 
