@@ -28,13 +28,26 @@ class Builder(ABC):
         raise NotImplementedError()
 
     @abstractmethod
+    def expected_sequences(self) -> tuple[tuple[int, ...], ...]:
+        ...
+
+    @abstractmethod
     def next_builder(self) -> "Builder | None":
         raise NotImplementedError()
+
+    def is_complete(self):
+        for sequence in self.expected_sequences():
+            if tuple(self.tokens) == sequence:
+                return True
+        return False
 
 
 class BuilderEnd(Builder):
     def get_allowed(self) -> set[int]:
-        return self._valid_tokens((self.context.end,))
+        return self._valid_tokens(self.expected_sequences())
+
+    def expected_sequences(self) -> tuple[tuple[int, ...], ...]:
+        return (self.context.end,)
 
     def next_builder(self) -> None:
         return None
@@ -42,19 +55,33 @@ class BuilderEnd(Builder):
 
 class BuilderSep(Builder):
     def get_allowed(self) -> set[int]:
-        return self._valid_tokens((self.context.sep,))
+        return self._valid_tokens(self.expected_sequences())
+
+    def expected_sequences(self) -> tuple[tuple[int, ...], ...]:
+        return (self.context.sep,)
 
     def next_builder(self) -> Builder:
         return BuilderKey(self.context)
 
 
 class BuilderValue(Builder):
-    ...
+
+    def get_allowed(self) -> set[int]:
+        raise NotImplementedError()
+
+    def expected_sequences(self) -> tuple[tuple[int, ...], ...]:
+        return ()
+
+    def next_builder(self) -> Builder:
+        raise NotImplementedError()
 
 
 class BuilderKVSep(Builder):
     def get_allowed(self) -> set[int]:
-        return self._valid_tokens((self.context.kvsep,))
+        return self._valid_tokens(self.expected_sequences())
+
+    def expected_sequences(self) -> tuple[tuple[int, ...], ...]:
+        return (self.context.kvsep,)
 
     def next_builder(self) -> Builder:
         return BuilderValue(self.context)
@@ -62,16 +89,22 @@ class BuilderKVSep(Builder):
 
 class BuilderKey(Builder):
     def get_allowed(self) -> set[int]:
-        return self._valid_tokens((self.context.parameters[0],))
+        return self._valid_tokens(self.expected_sequences())
+
+    def expected_sequences(self) -> tuple[tuple[int, ...], ...]:
+        return (self.context.param_start[0],)
 
     def next_builder(self) -> Builder:
-        self.context.parameters.pop(0)
+        self.context.param_start.pop(0)
         return BuilderKVSep(self.context)
 
 
-class BuilderParameters(Builder):
+class BuilderParameter_start(Builder):
     def get_allowed(self) -> set[int]:
-        return self._valid_tokens((self.context.parameters,))
+        return self._valid_tokens(self.expected_sequences())
+
+    def expected_sequences(self) -> tuple[tuple[int, ...], ...]:
+        return tuple(self.context.param_start)
 
     def next_builder(self) -> Builder:
         return BuilderKey(self.context)
@@ -79,9 +112,12 @@ class BuilderParameters(Builder):
 
 class BuilderFunction(Builder):
     def get_allowed(self) -> set[int]:
-        return self._valid_tokens(tuple(self.context.functions.keys()))
+        return self._valid_tokens(tuple(self.expected_sequences()))
+
+    def expected_sequences(self) -> tuple[tuple[int, ...], ...]:
+        return tuple(self.context.functions.keys())
 
     def next_builder(self) -> Builder:
-        self.context.parameters = \
+        self.context.param_start = \
             self.context.functions[tuple(self.tokens)].copy()
-        return BuilderParameters(self.context)
+        return BuilderParameter_start(self.context)
