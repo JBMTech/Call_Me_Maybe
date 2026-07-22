@@ -14,13 +14,15 @@ class LLMInterface:
         self.vocab: list[str] = list(
             json.loads(Path(self.model.get_path_to_vocab_file()).read_text())
             .keys())
-        self.structure_contex = StructureContext(
+        self.structure_context = StructureContext(
             functions={
                 tuple(self.get_tokens(x.name) + self.get_tokens('","')): [
                     tuple(self.get_tokens(y))
                     for y in x.parameters.keys()]
                 for x in funct_def},
-            param_start=[tuple(self.get_tokens('parameters":{"'))],
+            param_start=tuple(self.get_tokens('parameters":{"')),
+            param_names=[],
+            param_types={},
             kvsep=(tuple(self.get_tokens('":"'))),
             sep=tuple(self.get_tokens('","')),
             end=tuple(self.get_tokens('"}}\n')),
@@ -67,7 +69,7 @@ class LLMInterface:
 
         return best_token
 
-    def generate_json(self, prompt: str):
+    def generate_json(self, prompt: str) -> str:
         """
         Genera un JSON mediante constrained decoding.
         """
@@ -78,7 +80,7 @@ class LLMInterface:
         builder = BuilderFunction(context)
 
         # 3. Crear la salida
-        output: list[int] = []
+        output = []
 
         # 4. Construir el contexto del modelo
         output.extend(self.get_tokens(prompt))
@@ -97,10 +99,10 @@ class LLMInterface:
                 continue
 
             # Obtener los logits del modelo
-            logits = self.get_logits(model_context)
+            logits = self.get_logits(model_context + output)
 
             # Elegir el mejor token permitido
-            token = self.choose_best_token(...)
+            token = self.choose_best_token(logits, allowed)
 
             # Añadir el token
             builder = self.append_token(
@@ -110,4 +112,4 @@ class LLMInterface:
             )
 
         # 6. Devolver el JSON generado
-        return self.decode_tokens(output)
+        return self.decode_token(output)

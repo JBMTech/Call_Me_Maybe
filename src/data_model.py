@@ -22,8 +22,19 @@ class BuildJSON(BaseModel):
 
 
 class StructureContext(BaseModel):
+    # Funciones disponibles y sus parámetros
     functions: dict[tuple[int, ...], list[tuple[int, ...]]]
-    param_start: list[tuple[int, ...]] = []
+
+    # Token fijo: parameters":{
+    param_start: tuple[int, ...]
+
+    # Parámetros que faltan por escribir
+    param_names: list[tuple[int, ...]] = []
+
+    # Tipo de cada parámetro
+    param_types: dict[str, str] = {}
+
+    # Separadores del JSON
     kvsep: tuple[int, ...]
     sep: tuple[int, ...]
     end: tuple[int, ...]

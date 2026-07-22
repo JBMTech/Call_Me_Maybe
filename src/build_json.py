@@ -8,12 +8,13 @@ class Builder(ABC):
         self.context = context
         self.tokens: list[int] = []
 
-    def _valid_tokens(self, options: tuple[tuple[int, ...], ...]) -> set[int]:
+    def _valid_tokens(self, input_tokens:
+                      tuple[tuple[int, ...], ...]) -> set[int]:
         result: set[int] = set()
 
         if not self.tokens:
-            return {x[0] for x in options}
-        for option in options:
+            return {x[0] for x in input_tokens}
+        for option in input_tokens:
             if len(option) <= len(self.tokens):
                 continue
             for option_token, token in zip(option, self.tokens):
@@ -92,10 +93,10 @@ class BuilderKey(Builder):
         return self._valid_tokens(self.expected_sequences())
 
     def expected_sequences(self) -> tuple[tuple[int, ...], ...]:
-        return (self.context.param_start[0],)
+        return (self.context.param_names[0],)
 
     def next_builder(self) -> Builder:
-        self.context.param_start.pop(0)
+        self.context.param_names.pop(0)
         return BuilderKVSep(self.context)
 
 
@@ -104,7 +105,7 @@ class BuilderParameter_start(Builder):
         return self._valid_tokens(self.expected_sequences())
 
     def expected_sequences(self) -> tuple[tuple[int, ...], ...]:
-        return tuple(self.context.param_start)
+        return tuple(self.context.param_start,)
 
     def next_builder(self) -> Builder:
         return BuilderKey(self.context)
@@ -112,12 +113,12 @@ class BuilderParameter_start(Builder):
 
 class BuilderFunction(Builder):
     def get_allowed(self) -> set[int]:
-        return self._valid_tokens(tuple(self.expected_sequences()))
+        return self._valid_tokens(self.expected_sequences())
 
     def expected_sequences(self) -> tuple[tuple[int, ...], ...]:
         return tuple(self.context.functions.keys())
 
     def next_builder(self) -> Builder:
-        self.context.param_start = \
+        self.context.param_names = \
             self.context.functions[tuple(self.tokens)].copy()
         return BuilderParameter_start(self.context)
