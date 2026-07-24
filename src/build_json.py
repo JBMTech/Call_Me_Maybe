@@ -64,7 +64,9 @@ class BuilderSep(Builder):
         return (self.context.sep,)
 
     def next_builder(self) -> Builder:
-        return BuilderKey(self.context)
+        if self.context.param_names:
+            return BuilderKey(self.context)
+        return BuilderEnd(self.context)
 
 
 class BuilderValue(Builder):
@@ -98,7 +100,6 @@ class BuilderKey(Builder):
         return (self.context.param_names[0],)
 
     def next_builder(self) -> Builder:
-        self.context.param_names.pop(0)
         return BuilderKVSep(self.context)
 
 
@@ -121,6 +122,7 @@ class BuilderFunction(Builder):
         return tuple(self.context.functions.keys())
 
     def next_builder(self) -> Builder:
-        self.context.param_names = \
-            self.context.functions[tuple(self.tokens)].copy()
+        function = self.context.functions[tuple(self.tokens)]
+        self.context.param_names = function.param_names.copy()
+        self.context.param_types = function.param_types.copy()
         return BuilderParameter_start(self.context)

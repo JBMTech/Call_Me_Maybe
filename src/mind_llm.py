@@ -1,7 +1,11 @@
 import json
 from pathlib import Path
 from llm_sdk import Small_LLM_Model
-from .data_model import FunctionDefinition, StructureContext
+from .data_model import (
+    FunctionDefinition,
+    StructureContext,
+    FunctionContext,
+)
 from .build_json import Builder, BuilderFunction
 
 
@@ -16,19 +20,27 @@ class LLMInterface:
             .keys())
         self.structure_context = StructureContext(
             functions={
-                tuple(self.get_tokens(x.name) + self.get_tokens('","')): [
-                    tuple(self.get_tokens(y))
-                    for y in x.parameters.keys()]
-                for x in funct_def},
+                tuple(self.get_tokens(func.name) + self.get_tokens('","')):
+                FunctionContext(
+                    param_names=[
+                        tuple(self.get_tokens(param))
+                        for param in func.parameters.keys()
+                    ],
+                    param_types=[
+                        info["type"]
+                        for info in func.parameters.values()
+                    ]
+                )
+                for func in funct_def
+            },
             param_start=tuple(self.get_tokens('parameters":{"')),
-            param_names=[[self.get_tokens(y) for y in x.parameters.keys()]
-                         for x in funct_def],
-            param_types={[self.get_tokens(y) for y in x.parameters.values()]
-                         for x in funct_def},
-            kvsep=(tuple(self.get_tokens('":"'))),
+            param_names=[],
+            param_types=[],
+            kvsep=tuple(self.get_tokens('":"')),
             sep=tuple(self.get_tokens('","')),
             end=tuple(self.get_tokens('"}}\n')),
         )
+        self.function_defs = funct_def
 
     def get_tokens(self, string: str) -> list[int]:
         return self.model.encode(string)[0].tolist()
