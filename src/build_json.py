@@ -10,6 +10,8 @@ class Builder(ABC):
 
     def _valid_tokens(self, input_tokens:
                       tuple[tuple[int, ...], ...]) -> set[int]:
+        # print(type(self).__name__)
+        # print(input_tokens)
         result: set[int] = set()
 
         if not self.tokens:
@@ -105,7 +107,7 @@ class BuilderParameter_start(Builder):
         return self._valid_tokens(self.expected_sequences())
 
     def expected_sequences(self) -> tuple[tuple[int, ...], ...]:
-        return tuple(self.context.param_start,)
+        return (self.context.param_start, )
 
     def next_builder(self) -> Builder:
         return BuilderKey(self.context)

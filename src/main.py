@@ -24,9 +24,17 @@ def main() -> None:
 
         prompts = get_functions_calling_tests(args)
 
-        print(f"\nSe han cargado {len(prompts)} prompts.\n")
-
         interface = LLMInterface("Qwen/Qwen3-0.6B", functions_definition)
+
+        for test in prompts:
+            print("=" * 60)
+            print(f"Prompt:\n{test.prompt}\n")
+
+            result = interface.generate_json(test.prompt)
+
+            print("JSON generado:")
+            print(result)
+            print()
 
     except ValidationError as e:
         print(f"Invalid: {e}")

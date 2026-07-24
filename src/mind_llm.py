@@ -21,8 +21,10 @@ class LLMInterface:
                     for y in x.parameters.keys()]
                 for x in funct_def},
             param_start=tuple(self.get_tokens('parameters":{"')),
-            param_names=[],
-            param_types={},
+            param_names=[[self.get_tokens(y) for y in x.parameters.keys()]
+                         for x in funct_def],
+            param_types={[self.get_tokens(y) for y in x.parameters.values()]
+                         for x in funct_def},
             kvsep=(tuple(self.get_tokens('":"'))),
             sep=tuple(self.get_tokens('","')),
             end=tuple(self.get_tokens('"}}\n')),
@@ -89,7 +91,7 @@ class LLMInterface:
         # 5. Mientras exista un Builder
         while builder is not None:
 
-            # Obtener los tokens permitidos
+            # Obtener los tokens permitidos (lista de las funciones permitidas)
             allowed = builder.get_allowed()
 
             # Si el Builder terminó automáticamente,
