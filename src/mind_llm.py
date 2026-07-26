@@ -36,6 +36,7 @@ class LLMInterface:
             param_start=tuple(self.get_tokens('parameters":{"')),
             param_names=[],
             param_types=[],
+            vocab=self.vocab,
             kvsep=tuple(self.get_tokens('":"')),
             sep=tuple(self.get_tokens('","')),
             end=tuple(self.get_tokens('"}}\n')),
@@ -84,46 +85,36 @@ class LLMInterface:
         return best_token
 
     def generate_json(self, prompt: str) -> str:
-        """
-        Genera un JSON mediante constrained decoding.
-        """
-        # 1. Crear una copia del contexto
+
+        # 1. Copiar el contexto
         context = self.structure_context.model_copy(deep=True)
 
-        # 2. Crear el Builder inicial
+        # 2. Crear el primer Builder
         builder = BuilderFunction(context)
 
-        # 3. Crear la salida
+        # 3. Tokens del prompt (solo contexto del modelo)
+        model_context = self.get_tokens(prompt)
+
+        # 4. Salida del JSON
         output = []
 
-        # 4. Construir el contexto del modelo
-        output.extend(self.get_tokens(prompt))
-        model_context = output
-
-        # 5. Mientras exista un Builder
+        # 5. Generación restringida
         while builder is not None:
 
-            # Obtener los tokens permitidos (lista de las funciones permitidas)
             allowed = builder.get_allowed()
 
-            # Si el Builder terminó automáticamente,
-            # pasar al siguiente
             if not allowed:
                 builder = builder.next_builder()
                 continue
 
-            # Obtener los logits del modelo
             logits = self.get_logits(model_context + output)
 
-            # Elegir el mejor token permitido
             token = self.choose_best_token(logits, allowed)
 
-            # Añadir el token
-            builder = self.append_token(
-                output,
-                builder,
-                token
-            )
+            builder = self.append_token(output, builder, token)
 
-        # 6. Devolver el JSON generado
+        # 6. Decodificar
         return self.decode_token(output)
+        # 7. Reconstruir un JSON válido
+        # 8. Convertirlo en diccionario
+        # 9. Devolver BuildJSON

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class FunctionDefinition(BaseModel):
@@ -41,6 +41,9 @@ class StructureContext(BaseModel):
 
     # Tipo de cada parámetro
     param_types: list[str] = Field(default_factory=list)
+
+    # Vocabulario del modelo
+    vocab: list[str]
 
     # Separadores del JSON
     kvsep: tuple[int, ...]

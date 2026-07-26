@@ -30,11 +30,15 @@ def main() -> None:
             print("=" * 60)
             print(f"Prompt:\n{test.prompt}\n")
 
-            result = interface.generate_json(test.prompt)
-
-            print("JSON generado:")
-            print(result)
-            print()
+            generated = interface.generate_json(test.prompt)
+            json_text = '{"name":"' + generated
+            data = json.loads(json_text)
+            result = {
+                "prompt": test.prompt,
+                "name": data["name"],
+                "parameters": data["parameters"],
+            }
+            print(json.dumps(result, indent=4))
 
     except ValidationError as e:
         print(f"Invalid: {e}")

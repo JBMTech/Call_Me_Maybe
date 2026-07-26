@@ -72,13 +72,43 @@ class BuilderSep(Builder):
 class BuilderValue(Builder):
 
     def get_allowed(self) -> set[int]:
-        raise NotImplementedError()
 
-    def expected_sequences(self) -> tuple[tuple[int, ...], ...]:
+        current_type = self.context.param_types[0]
+
+        allowed: set[int] = set()
+
+        for token_id, token_text in enumerate(self.context.vocab):
+
+            text = token_text.strip()
+
+            if current_type == "number":
+                if any(c.isdigit() for c in text):
+                    allowed.add(token_id)
+
+            elif current_type == "boolean":
+                if text in {"true", "false"}:
+                    allowed.add(token_id)
+
+            elif current_type == "string":
+                if text:
+                    allowed.add(token_id)
+
+        return allowed
+
+    def expected_sequences(self):
         return ()
 
-    def next_builder(self) -> Builder:
-        raise NotImplementedError()
+    def is_complete(self):
+        return len(self.tokens) > 0
+
+    def next_builder(self) -> "Builder | None":
+        self.context.param_names.pop(0)
+        self.context.param_types.pop(0)
+
+        if self.context.param_names:
+            return BuilderSep(self.context)
+
+        return BuilderEnd(self.context)
 
 
 class BuilderKVSep(Builder):
