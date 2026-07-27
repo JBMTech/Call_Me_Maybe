@@ -34,8 +34,8 @@ class LLMInterface:
                 for func in funct_def
             },
             param_start=tuple(self.get_tokens('parameters":{"')),
-            param_names=[],
-            param_types=[],
+            # param_names=[],
+            # param_types=[],
             vocab=self.vocab,
             kvsep=tuple(self.get_tokens('":"')),
             sep=tuple(self.get_tokens('","')),
@@ -93,7 +93,16 @@ class LLMInterface:
         builder = BuilderFunction(context)
 
         # 3. Tokens del prompt (solo contexto del modelo)
-        model_context = self.get_tokens(prompt)
+        text = ""
+
+        for func in self.function_defs:
+            text += f"Function: {func.name}\n"
+            text += f"Description: {func.description}\n\n"
+            # text += f"Return: {func.returns}\n\n"
+
+        func_descript = self.get_tokens(text)
+
+        model_context = (func_descript + self.get_tokens(prompt))
 
         # 4. Salida del JSON
         output = []
@@ -115,6 +124,3 @@ class LLMInterface:
 
         # 6. Decodificar
         return self.decode_token(output)
-        # 7. Reconstruir un JSON válido
-        # 8. Convertirlo en diccionario
-        # 9. Devolver BuildJSON
