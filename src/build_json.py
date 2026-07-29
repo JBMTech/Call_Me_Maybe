@@ -71,6 +71,12 @@ class BuilderSep(Builder):
 
 
 class BuilderValue(Builder):
+    
+    def __init__(self, context):
+        super().__init__(context)
+
+        # Posición donde empieza este valor dentro del output.
+        self.output_start = 0
 
     def unconditional(self) -> bool:
         return True

@@ -101,18 +101,22 @@ class LLMInterface:
         # CASO BuilderValue
         # -----------------------------
 
+        # Primera vez que entramos en este Builder
+        if not builder.tokens:
+            builder.output_start = len(output)
+
         builder.tokens.append(token)
 
         texto = self.decode_token(builder.tokens)
 
         longitud = self.valid_len(texto)
 
-        # El modelo todavía sigue escribiendo el valor
+        # Sigue siendo un valor válido
         if longitud == len(texto):
             output.append(token)
             return builder
 
-        # El modelo ya empezó el siguiente campo del JSON
+        # Hay basura después del valor
 
         texto_valido = texto[:longitud]
 
@@ -120,7 +124,9 @@ class LLMInterface:
 
         builder.tokens = tokens_validos
 
-        output[:] = output[:-1]        # eliminaremos el token incorrecto
+        # Sustituimos TODO el valor anterior
+        output[:] = output[:builder.output_start]
+
         output.extend(tokens_validos)
 
         return builder.next_builder()
@@ -153,7 +159,8 @@ class LLMInterface:
 
         for func in self.function_defs:
             text += f"Function: {func.name}\n"
-            text += f"Description: {func.description}\n\n"
+            text += f"Description: {func.description}\n"
+            text += f"Returns: {func.returns}\n\n"
 
         func_descript = self.get_tokens(text)
 
