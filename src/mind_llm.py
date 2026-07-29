@@ -6,7 +6,11 @@ from .data_model import (
     StructureContext,
     FunctionContext,
 )
-from .build_json import Builder, BuilderFunction
+from .build_json import (
+    Builder,
+    BuilderFunction,
+    BuilderValue
+)
 
 
 class LLMInterface:
@@ -34,8 +38,6 @@ class LLMInterface:
                 for func in funct_def
             },
             param_start=tuple(self.get_tokens('parameters":{"')),
-            # param_names=[],
-            # param_types=[],
             vocab=self.vocab,
             kvsep=tuple(self.get_tokens('":"')),
             sep=tuple(self.get_tokens('","')),
@@ -52,22 +54,76 @@ class LLMInterface:
     def decode_token(self, tokens: list[int]) -> str:
         return self.model.decode(tokens)
 
-    def append_token(self, output: list[int], builder: Builder, token: int):
-        """ 1. Obtener los tokens permitidos.
-        2. Si el token no está permitido → salir.
-        3. Añadir el token al Builder.
-        4. Añadir el token a output.
-        5. Si el Builder ha terminado: devolver builder.next_builder()
-        6. Si no: seguir con el mismo Builder.
+    def value_is_finished(self, builder: BuilderValue) -> bool:
         """
+        Comprueba si el valor generado ya puede cerrarse.
+        """
+
+        text = self.decode_token(builder.tokens)
+
+        try:
+            json.loads(f'["{text}"]')
+            return True
+        except json.JSONDecodeError:
+            return False
+
+    def valid_len(self, text: str) -> int:
+        """
+        Devuelve cuántos caracteres forman todavía un string JSON válido.
+        """
+        for i in range(1, len(text) + 1):
+            try:
+                json.loads(f'["{text[:i]}"]')
+            except json.JSONDecodeError:
+                return i - 1
+        return len(text)
+
+    def append_token(self, output: list[int], builder: Builder, token: int):
+
         allowed = builder.get_allowed()
-        if token not in allowed:
+
+        if not builder.unconditional() and token not in allowed:
             return builder
+
+        # -----------------------------
+        # CASO NORMAL
+        # -----------------------------
+        if not isinstance(builder, BuilderValue):
+            builder.tokens.append(token)
+            output.append(token)
+
+            if builder.is_complete():
+                return builder.next_builder()
+
+            return builder
+
+        # -----------------------------
+        # CASO BuilderValue
+        # -----------------------------
+
         builder.tokens.append(token)
-        output.append(token)
-        if builder.is_complete():
-            return builder.next_builder()
-        return builder
+
+        texto = self.decode_token(builder.tokens)
+
+        longitud = self.valid_len(texto)
+
+        # El modelo todavía sigue escribiendo el valor
+        if longitud == len(texto):
+            output.append(token)
+            return builder
+
+        # El modelo ya empezó el siguiente campo del JSON
+
+        texto_valido = texto[:longitud]
+
+        tokens_validos = self.get_tokens(texto_valido)
+
+        builder.tokens = tokens_validos
+
+        output[:] = output[:-1]        # eliminaremos el token incorrecto
+        output.extend(tokens_validos)
+
+        return builder.next_builder()
 
     def choose_best_token(self, logits: list[float], allowed: set[int]) -> int:
 
@@ -98,7 +154,6 @@ class LLMInterface:
         for func in self.function_defs:
             text += f"Function: {func.name}\n"
             text += f"Description: {func.description}\n\n"
-            # text += f"Return: {func.returns}\n\n"
 
         func_descript = self.get_tokens(text)
 
@@ -112,13 +167,16 @@ class LLMInterface:
 
             allowed = builder.get_allowed()
 
-            if not allowed:
+            if not builder.unconditional() and not allowed:
                 builder = builder.next_builder()
                 continue
 
             logits = self.get_logits(model_context + output)
 
-            token = self.choose_best_token(logits, allowed)
+            if builder.unconditional():
+                token = logits.index(max(logits))
+            else:
+                token = self.choose_best_token(logits, allowed)
 
             builder = self.append_token(output, builder, token)
 

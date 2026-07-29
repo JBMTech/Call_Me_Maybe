@@ -10,8 +10,6 @@ class Builder(ABC):
 
     def _valid_tokens(self, input_tokens:
                       tuple[tuple[int, ...], ...]) -> set[int]:
-        # print(type(self).__name__)
-        # print(input_tokens)
         result: set[int] = set()
 
         if not self.tokens:
@@ -38,10 +36,13 @@ class Builder(ABC):
     def next_builder(self) -> "Builder | None":
         raise NotImplementedError()
 
-    def is_complete(self):
+    def is_complete(self) -> bool:
         for sequence in self.expected_sequences():
             if tuple(self.tokens) == sequence:
                 return True
+        return False
+
+    def unconditional(self) -> bool:
         return False
 
 
@@ -71,29 +72,18 @@ class BuilderSep(Builder):
 
 class BuilderValue(Builder):
 
+    def unconditional(self) -> bool:
+        return True
+
     def get_allowed(self) -> set[int]:
+        return set()
 
-        current_type = self.context.param_types[0]
-
-        allowed: set[int] = set()
-
-        for token_id, token_text in enumerate(self.context.vocab):
-
-            text = token_text.strip()
-
-            if current_type == "number":
-                if any(c.isdigit() for c in text):
-                    allowed.add(token_id)
-
-            elif current_type == "boolean":
-                if text in {"true", "false"}:
-                    allowed.add(token_id)
-
-            elif current_type == "string":
-                if text:
-                    allowed.add(token_id)
-
-        return allowed
+    def current_text(self) -> str:
+        """
+        Obtenemos el texto actual de tokens.
+        """
+        return "".join(self.context.vocab[token]
+                       for token in self.tokens)
 
     def expected_sequences(self):
         return ()
