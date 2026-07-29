@@ -160,7 +160,7 @@ class LLMInterface:
         for func in self.function_defs:
             text += f"Function: {func.name}\n"
             text += f"Description: {func.description}\n"
-            text += f"Returns: {func.returns}\n\n"
+            text += f"Parameters: {func.parameters}\n\n"
 
         func_descript = self.get_tokens(text)
 
