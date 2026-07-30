@@ -8,3 +8,4 @@ https://developers.openai.com/api/docs/guides/function-calling
 https://jacar.es/openai-function-calling/
 https://www.youtube.com/watch?v=a1rfEQnHkm8&t=472s
 https://github.com/orgs/microsoft-foundry/discussions/165
+https://www.ibm.com/es-es/think/topics/prompt-engineering-techniques#7281536

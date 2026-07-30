@@ -155,7 +155,8 @@ class LLMInterface:
         builder = BuilderFunction(context)
 
         # 3. Tokens del prompt (solo contexto del modelo)
-        text = ""
+        text = "You are an assistant that only outputs JSON.\n"
+        text += "Available functions\n"
 
         for func in self.function_defs:
             text += f"Function: {func.name}\n"

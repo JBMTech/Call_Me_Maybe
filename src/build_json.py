@@ -71,7 +71,7 @@ class BuilderSep(Builder):
 
 
 class BuilderValue(Builder):
-    
+
     def __init__(self, context):
         super().__init__(context)
 
@@ -91,10 +91,10 @@ class BuilderValue(Builder):
         return "".join(self.context.vocab[token]
                        for token in self.tokens)
 
-    def expected_sequences(self):
+    def expected_sequences(self) -> tuple[tuple[int, ...], ...]:
         return ()
 
-    def is_complete(self):
+    def is_complete(self) -> bool:
         return len(self.tokens) > 0
 
     def next_builder(self) -> "Builder | None":

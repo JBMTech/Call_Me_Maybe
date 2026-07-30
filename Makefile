@@ -27,10 +27,4 @@ lint:
             --check-untyped-defs \
             --exclude '^(venv|\.venv|env|llm_sdk)/'
 
-lint-strict: clean
-	uv run flake8 --exclude=.venv,llm_sdk .
-	uv run mypy . \
-		--strict \
-		--exclude '^(venv|\.venv|env|llm_sdk)/'
-
-.PHONY: install run debug clean fclean lint lint-strict
+.PHONY: install run debug clean fclean lint

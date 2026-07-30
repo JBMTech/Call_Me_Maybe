@@ -6,7 +6,7 @@ from pydantic import ValidationError
 from .data_model import FunctionDefinition, TestPrompt
 
 
-def get_arguments():
+def get_arguments() -> Any:
 
     parser = argparse.ArgumentParser(
         description='Project 42 called Call_Me_Maybe, created by jabuleje')
@@ -25,12 +25,12 @@ def get_arguments():
         required=False,
         help="Path of the input prompts file.")
 
-    # parser.add_argument(
-    #     '-o', '--output',
-    #     type=str,
-    #     default='data/output/function_calling_result.json',
-    #     required=False,
-    #     help="Path of the output JSON file.")
+    parser.add_argument(
+        '-o', '--output',
+        type=str,
+        default='data/output/function_calling_result.json',
+        required=False,
+        help="Path of the output JSON file.")
 
     return parser.parse_args()
 
