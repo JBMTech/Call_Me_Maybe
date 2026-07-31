@@ -11,6 +11,7 @@ from .build_json import (
     BuilderFunction,
     BuilderValue
 )
+from typing import Any
 
 
 class LLMInterface:
@@ -54,19 +55,6 @@ class LLMInterface:
     def decode_token(self, tokens: list[int]) -> str:
         return self.model.decode(tokens)
 
-    def value_is_finished(self, builder: BuilderValue) -> bool:
-        """
-        Comprueba si el valor generado ya puede cerrarse.
-        """
-
-        text = self.decode_token(builder.tokens)
-
-        try:
-            json.loads(f'["{text}"]')
-            return True
-        except json.JSONDecodeError:
-            return False
-
     def valid_len(self, text: str) -> int:
         """
         Devuelve cuántos caracteres forman todavía un string JSON válido.
@@ -78,7 +66,10 @@ class LLMInterface:
                 return i - 1
         return len(text)
 
-    def append_token(self, output: list[int], builder: Builder, token: int):
+    def append_token(
+            self, output: list[int],
+            builder: Builder,
+            token: int) -> Any:
 
         allowed = builder.get_allowed()
 

@@ -1,29 +1,63 @@
 import json
-
 from pydantic import ValidationError
-
+from .data_model import BuildJSON
 from pathlib import Path
-
+from typing import Any
 from .arguments import (
     get_arguments,
     get_functions_definition,
     get_functions_calling_tests,
 )
-
-# from .data_model import BuildJSON
-
 from .mind_llm import LLMInterface
+import time
+from functools import wraps
 
 
-def try_cast_int(val):
-    if isinstance(val, str):
-        try:
-            return int(val)
-        except ValueError:
-            return val
-    return val
+def measure_time(function):
+    @wraps(function)
+    def envelope(*args, **kwargs):
+        # 1. Registrar el tiempo de start
+        start = time.perf_counter()
+
+        # 2. Ejecutar la función real
+        result = function(*args, **kwargs)
+
+        # 3. Registrar el tiempo final
+        end = time.perf_counter()
+
+        # 4. Calcular e imprimir la diferencia (Convertido a minutos)
+        total_time = end - start
+        time_in_minutes = total_time / 60
+        print(
+            f"\n[⏱️] Tiempo de ejecución de '{function.__name__}': {time_in_minutes:.2f} minutos"
+        )
+
+        # 5. Devolver el result de la función original
+        return result
+    return envelope
 
 
+def cast_value(value: str, expected_type: str) -> Any:
+
+    if expected_type == "number":
+
+        number = float(value)
+
+        if number.is_integer():
+            return int(number)
+
+        return number
+
+    if expected_type == "integer":
+        return int(value)
+
+    if expected_type == "boolean":
+        return value.lower() == "true"
+
+    return value
+
+
+@measure_time
 def main() -> None:
     try:
         args = get_arguments()
@@ -45,26 +79,36 @@ def main() -> None:
         result_json = []
 
         for test in prompts:
-            # print("=" * 60)
-            # print(f"Prompt:\n{test.prompt}\n")
 
             generated = interface.generate_json(test.prompt)
             json_text = '{"name":"' + generated
             data = json.loads(json_text)
-            result = {
-                "prompt": test.prompt,
-                "name": data["name"],
-                "parameters": {
-                    k: try_cast_int(v)
-                    for k, v in data["parameters"].items()
-                },
-            }
-            # print(json.dumps(result, indent=4))
+            func = next(
+                f for f in functions_definition
+                if f.name == data["name"]
+            )
+
+            parameters = {}
+
+            for key, value in data["parameters"].items():
+                expected_type = func.parameters[key]["type"]
+                parameters[key] = cast_value(value, expected_type)
+
+            result = BuildJSON(
+                prompt=test.prompt,
+                name=data["name"],
+                parameters=parameters
+            )
 
             result_json.append(result)
 
         with open(output_path, "w", encoding="utf-8") as f:
-            json.dump(result_json, f, indent=4, ensure_ascii=False)
+            json.dump(
+                [r.model_dump() for r in result_json],
+                f,
+                indent=4,
+                ensure_ascii=False,
+            )
 
         print(f"\n[INFO] Archivo guardado exitosamente en: {output_path}")
 

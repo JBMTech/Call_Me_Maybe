@@ -5,7 +5,8 @@ install:
 run:
 		uv run python -m src.main \
 		--functions_definition data/input/functions_definition.json \
-		--input data/input/function_calling_tests.json
+		--input data/input/function_calling_tests.json \
+		--output data/output/function_calls.json
 
 debug:
 		uv run python3 -m pdb -m src
