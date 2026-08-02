@@ -1,8 +1,8 @@
 *This project has been created as part of the 42 curriculum by jabuleje*
 
-# Call Me Maybe
+# 🧩 Call Me Maybe
 
-## Description
+## 📖 Description
 
 **Call Me Maybe** is a project that explores **constrained decoding** for function calling with small Large Language Models (LLMs).
 
@@ -14,15 +14,15 @@ The implementation uses the **Qwen3-0.6B** language model together with a custom
 
 ---
 
-## Instructions
+## 🛠️ Instructions
 
-### Requirements
+### 📄 Requirements
 
-* Python 3.11 or newer
+* Python 3.10 or newer
 * `uv`
-* Internet connection (only required the first time to download the language model from Hugging Face)
+* `Qwen3-0.6B`
 
-### Installation
+### ▶️ Installation
 
 Clone the repository and install all required dependencies:
 
@@ -36,7 +36,7 @@ or
 uv sync
 ```
 
-### Running the program
+### ▶️ Running the program
 
 Execute the project using:
 
@@ -53,14 +53,14 @@ uv run python -m src.main \
     --output data/output/function_calling_results.json
 ```
 
-### Input files
+### 🔹 Input files
 
 The program expects two input files:
 
 * `functions_definition.json`: contains the available function definitions, their descriptions, parameter names, and parameter types.
 * `function_calling_tests.json`: contains the prompts that will be processed by the language model.
 
-### Output
+### 🔹 Output
 
 The generated function calls are written to:
 
@@ -75,7 +75,7 @@ Each generated object contains:
 * the generated parameters,
 * parameter values converted to their corresponding Python types whenever applicable.
 
-## Algorithm Explanation
+## 🧠 Algorithm Explanation
 
 The project implements **constrained decoding** to generate structured JSON function calls using a small language model.
 
@@ -104,7 +104,7 @@ This approach guarantees that the overall JSON structure is always valid while p
 
 ---
 
-## Design Decisions
+## ♦️ Design Decisions
 
 Several design choices were made during the implementation:
 
@@ -122,7 +122,7 @@ Several design choices were made during the implementation:
 
 ---
 
-## Performance Analysis
+## ♦️ Performance Analysis
 
 ### Accuracy
 
@@ -227,7 +227,7 @@ Generated output:
 }
 ```
 
-## Resources
+## 📚 Resources
 
 The following resources were used throughout the development of this project:
 
@@ -251,7 +251,7 @@ The following topics were studied during the implementation of this project:
 * Tokenization and autoregressive language models
 * Pydantic data validation
 
-### Use of Artificial Intelligence
+### 🤖 Use of Artificial Intelligence
 
 Artificial Intelligence **[ChatGPT]** was used as a development and learning assistant throughout the project.
 

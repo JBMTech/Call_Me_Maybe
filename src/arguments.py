@@ -7,7 +7,13 @@ from .data_model import FunctionDefinition, TestPrompt
 
 
 def get_arguments() -> Any:
+    """
+    Parse command-line arguments for the application.
 
+    Returns:
+        Any: Parsed command-line arguments containing the paths to the
+        input files and the output file.
+    """
     parser = argparse.ArgumentParser(
         description='Project 42 called Call_Me_Maybe, created by jabuleje')
 
@@ -35,7 +41,32 @@ def get_arguments() -> Any:
     return parser.parse_args()
 
 
-def get_functions_definition(args: Any) -> list[FunctionDefinition]:
+def get_functions_definition(args: Any) -> list[FunctionDefinition] | None:
+    """
+    Load and validate the function definitions file.
+
+    The JSON file is parsed and each entry is validated using the
+    ``FunctionDefinition`` Pydantic model.
+
+    Args:
+        args (Any):
+            Parsed command-line arguments containing the path to the
+            function definitions file.
+
+    Returns:
+        list[FunctionDefinition]:
+            A list of validated function definitions.
+
+    Raises:
+        FileNotFoundError:
+            If the file does not exist.
+        PermissionError:
+            If the file cannot be accessed.
+        json.JSONDecodeError:
+            If the JSON file is malformed.
+        ValidationError:
+            If the JSON structure does not match the expected schema.
+    """
     try:
         with open(args.functions_definition, 'r', encoding='utf-8') as file:
             datos_json = json.load(file)
@@ -54,7 +85,32 @@ def get_functions_definition(args: Any) -> list[FunctionDefinition]:
         print(f"Invalid data structure: {e}")
 
 
-def get_functions_calling_tests(args: Any) -> list[TestPrompt]:
+def get_functions_calling_tests(args: Any) -> list[TestPrompt] | None:
+    """
+    Load and validate the prompt test file.
+
+    The JSON file is parsed and each prompt is validated using the
+    ``TestPrompt`` Pydantic model.
+
+    Args:
+        args (Any):
+            Parsed command-line arguments containing the path to the
+            prompt test file.
+
+    Returns:
+        list[TestPrompt]:
+            A list of validated prompt objects.
+
+    Raises:
+        FileNotFoundError:
+            If the file does not exist.
+        PermissionError:
+            If the file cannot be accessed.
+        json.JSONDecodeError:
+            If the JSON file is malformed.
+        ValidationError:
+            If the JSON structure does not match the expected schema.
+    """
     try:
         with open(args.input, 'r', encoding='utf-8') as file:
             datos_prompt = json.load(file)

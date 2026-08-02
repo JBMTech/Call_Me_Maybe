@@ -2,7 +2,21 @@ from pydantic import BaseModel, Field
 
 
 class FunctionDefinition(BaseModel):
-    """Representa una función del archivo functions_definition.json."""
+    """
+    Represents a function definition loaded from
+    ``functions_definition.json``.
+
+    Attributes:
+        name:
+            Name of the function.
+        description:
+            Natural language description of the function.
+        parameters:
+            Dictionary describing the function parameters and their
+            associated JSON types.
+        returns:
+            Dictionary describing the function return type.
+    """
     name: str
     description: str
     parameters: dict[str, dict[str, str]]
@@ -10,42 +24,98 @@ class FunctionDefinition(BaseModel):
 
 
 class TestPrompt(BaseModel):
-    """Representa el prompt del archivo funtions_calling_tests.json"""
+    """
+    Represents a prompt loaded from
+    ``function_calling_tests.json``.
+
+    Attributes:
+        prompt:
+            Natural language prompt used as input for the language
+            model.
+    """
     prompt: str
 
 
 class BuildJSON(BaseModel):
-    """Representa la estructura de function_calling_results.json"""
+    """
+    Represents a generated function call.
+
+    This model validates the structure of the JSON objects written to
+    ``function_calling_result.json``.
+
+    Attributes:
+        prompt:
+            Original user prompt.
+        name:
+            Name of the selected function.
+        parameters:
+            Dictionary containing the generated parameter values.
+    """
     prompt: str
     name: str
     parameters: dict[str, str | int | float | bool]
 
 
 class FunctionContext(BaseModel):
+    """
+    Stores the decoding information associated with a single function.
+
+    During constrained decoding, parameter names and parameter types
+    are copied from this model into the active decoding context.
+
+    Attributes:
+        param_names:
+            Tokenized parameter names.
+        param_types:
+            JSON type associated with each parameter.
+    """
     param_names: list[tuple[int, ...]]
     param_types: list[str]
 
 
 class StructureContext(BaseModel):
-    # Funciones disponibles y sus parámetros
+    """
+    Shared context used during constrained decoding.
+
+    This model stores the tokenized JSON grammar, the available
+    functions, their parameters and the model vocabulary required by
+    the different Builder states.
+
+    Attributes:
+        functions:
+            Mapping between tokenized function names and their decoding
+            context.
+
+        param_start:
+            Token sequence representing the beginning of the
+            ``parameters`` object.
+
+        param_names:
+            Remaining parameter names to generate.
+
+        param_types:
+            JSON type associated with each remaining parameter.
+
+        vocab:
+            Vocabulary of the language model.
+
+        kvsep:
+            Token sequence representing the JSON key-value separator.
+
+        sep:
+            Token sequence separating two JSON parameters.
+
+        end:
+            Token sequence closing the generated JSON object.
+    """
     functions: dict[
         tuple[int, ...],
         FunctionContext
     ]
-
-    # Token fijo: parameters":{
     param_start: tuple[int, ...]
-
-    # Parámetros que faltan por escribir
     param_names: list[tuple[int, ...]] = Field(default_factory=list)
-
-    # Tipo de cada parámetro
     param_types: list[str] = Field(default_factory=list)
-
-    # Vocabulario del modelo
     vocab: list[str]
-
-    # Separadores del JSON
     kvsep: tuple[int, ...]
     sep: tuple[int, ...]
     end: tuple[int, ...]

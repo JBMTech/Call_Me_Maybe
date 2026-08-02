@@ -15,7 +15,16 @@ from typing import Any
 
 
 class LLMInterface:
+    """
+    Interface responsible for interacting with the language model.
 
+    This class initializes the LLM, prepares the constrained decoding
+    context, and generates structured JSON function calls from natural
+    language prompts.
+
+    The decoding process combines unrestricted language model generation
+    with Builder objects that constrain the JSON syntax.
+    """
     def __init__(self,
                  model_name: str,
                  funct_def: list[FunctionDefinition]):
@@ -57,7 +66,20 @@ class LLMInterface:
 
     def valid_len(self, text: str) -> int:
         """
-        Devuelve cuántos caracteres forman todavía un string JSON válido.
+        Determine the longest valid JSON string prefix.
+
+        This method is used while generating parameter values. It detects
+        where the language model starts generating JSON syntax belonging
+        to the next field instead of the current value.
+
+        Args:
+            text:
+                Decoded parameter value.
+
+        Returns:
+            int:
+                Length of the longest prefix that is still a valid JSON
+                string.
         """
         for i in range(1, len(text) + 1):
             try:
@@ -70,7 +92,30 @@ class LLMInterface:
             self, output: list[int],
             builder: Builder,
             token: int) -> Any:
+        """
+        Append a generated token to the current Builder.
 
+        For regular Builders, the token is simply appended and the Builder
+        advances once its expected sequence is complete.
+
+        For BuilderValue, the generated value is continuously validated to
+        ensure that only the valid JSON value is kept. Any extra characters
+        produced by the language model are discarded before moving to the
+        next Builder.
+
+        Args:
+            output:
+                Tokens composing the generated JSON.
+            builder:
+                Active Builder controlling the decoding state.
+            token:
+                Token selected by the language model.
+
+        Returns:
+            Builder | None:
+                Current Builder if generation should continue in the same
+                state, the next Builder otherwise.
+        """
         allowed = builder.get_allowed()
 
         if not builder.unconditional() and token not in allowed:
@@ -123,7 +168,19 @@ class LLMInterface:
         return builder.next_builder()
 
     def choose_best_token(self, logits: list[float], allowed: set[int]) -> int:
+        """
+        Select the highest-scoring valid token.
 
+        Args:
+            logits:
+                Scores produced by the language model.
+            allowed:
+                Set of token IDs allowed by the current Builder.
+
+        Returns:
+            int:
+                Token ID with the highest score among the allowed tokens.
+        """
         best_token = None
         best_logit = float("-inf")
 
@@ -138,7 +195,30 @@ class LLMInterface:
         return best_token
 
     def generate_json(self, prompt: str) -> str:
+        """
+        Generate a JSON function call from a natural language prompt.
 
+        The method performs constrained decoding by combining language
+        model predictions with a sequence of Builder objects that enforce
+        the JSON grammar.
+
+        The generation process consists of:
+            1. Copying the decoding context.
+            2. Creating the initial Builder.
+            3. Building the model prompt.
+            4. Iteratively generating tokens.
+            5. Validating each generated token.
+            6. Decoding the final token sequence.
+
+        Args:
+            prompt:
+                Natural language prompt.
+
+        Returns:
+            str:
+                Generated JSON fragment containing the function name and
+                parameters.
+        """
         # 1. Copiar el contexto
         context = self.structure_context.model_copy(deep=True)
 
