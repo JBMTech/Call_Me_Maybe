@@ -14,7 +14,7 @@ import sys
 from functools import wraps
 
 
-def measure_time(function):
+def measure_time(function: Any) -> Any:
     """
     Measure and display the execution time of a function.
 
@@ -30,24 +30,20 @@ def measure_time(function):
         before returning the original result.
     """
     @wraps(function)
-    def envelope(*args, **kwargs):
-        # 1. Registrar el tiempo de start
+    def envelope(*args, **kwargs) -> Any:
         start = time.perf_counter()
 
-        # 2. Ejecutar la función real
         result = function(*args, **kwargs)
 
-        # 3. Registrar el tiempo final
         end = time.perf_counter()
 
-        # 4. Calcular e imprimir la diferencia (Convertido a minutos)
         total_time = end - start
         time_in_minutes = total_time / 60
         print(
-            f"\n[⏱️] Tiempo de ejecución de '{function.__name__}': {time_in_minutes:.2f} minutos"
+            f"\n[⏱️ Execution time of '{function.__name__}':"
+            f"{time_in_minutes:.2f} minutes]"
         )
 
-        # 5. Devolver el result de la función original
         return result
     return envelope
 
@@ -144,7 +140,7 @@ def main() -> None:
                 ensure_ascii=False,
             )
 
-        print(f"\n[INFO] Archivo guardado exitosamente en: {output_path}")
+        print(f"\n[INFO] File saved successfully in: {output_path}")
 
     except ValidationError as e:
         print(f"Invalid: {e}")

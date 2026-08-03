@@ -95,6 +95,7 @@ The decoding process follows these steps:
    * `BuilderValue`
    * `BuilderSep`
    * `BuilderEnd`
+
 5. Structural elements of the JSON (keys, separators and delimiters) are generated using constrained decoding.
 6. Parameter values are generated with unrestricted decoding so that the language model can freely produce the requested content.
 7. After each generated token, the decoder verifies whether the generated value is still valid JSON. When the beginning of the next JSON field is detected, only the valid portion of the value is kept, and the decoder transitions to the next state.
@@ -129,8 +130,6 @@ Several design choices were made during the implementation:
 The constrained decoder consistently produces syntactically valid JSON objects. Compared to unrestricted generation, malformed JSON outputs were eliminated.
 
 The addition of function descriptions to the model context also improved function selection for many prompts.
-
-The overall quality of parameter generation depends on the underlying language model. Structural correctness is guaranteed by the decoder, while semantic correctness is limited by the model's reasoning capabilities.
 
 ### Speed
 
@@ -262,6 +261,3 @@ Its use included:
 * Reviewing algorithms and identifying possible bugs.
 * Helping understand Python language features and standard library functions.
 * Assisting with debugging and analysing unexpected behaviours.
-* Reviewing documentation and improving code readability.
-* Assisting in writing and proofreading the project documentation.
-

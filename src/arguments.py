@@ -41,7 +41,7 @@ def get_arguments() -> Any:
     return parser.parse_args()
 
 
-def get_functions_definition(args: Any) -> list[FunctionDefinition] | None:
+def get_functions_definition(args: Any) -> list[FunctionDefinition]:
     """
     Load and validate the function definitions file.
 
@@ -85,7 +85,7 @@ def get_functions_definition(args: Any) -> list[FunctionDefinition] | None:
         print(f"Invalid data structure: {e}")
 
 
-def get_functions_calling_tests(args: Any) -> list[TestPrompt] | None:
+def get_functions_calling_tests(args: Any) -> list[TestPrompt]:
     """
     Load and validate the prompt test file.
 

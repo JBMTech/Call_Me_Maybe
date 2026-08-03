@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "pydantic>=2.13.4",
-    "llm_sdk",
+    "llm-sdk",
 ]
 
 [tool.uv.sources]

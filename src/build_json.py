@@ -149,7 +149,7 @@ class BuilderValue(Builder):
     that it forms a valid JSON value before the decoding process
     continues.
     """
-    def __init__(self, context):
+    def __init__(self, context: StructureContext) -> None:
         super().__init__(context)
         self.output_start = 0
 

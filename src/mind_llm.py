@@ -27,7 +27,7 @@ class LLMInterface:
     """
     def __init__(self,
                  model_name: str,
-                 funct_def: list[FunctionDefinition]):
+                 funct_def: list[FunctionDefinition]) -> None:
         self.model = Small_LLM_Model(model_name)
         self.vocab: list[str] = list(
             json.loads(Path(self.model.get_path_to_vocab_file()).read_text())
@@ -55,13 +55,13 @@ class LLMInterface:
         )
         self.function_defs = funct_def
 
-    def get_tokens(self, string: str) -> list[int]:
+    def get_tokens(self, string: str) -> Any:
         return self.model.encode(string)[0].tolist()
 
-    def get_logits(self, input_ids: list[int]) -> list[float]:
+    def get_logits(self, input_ids: list[int]) -> Any:
         return self.model.get_logits_from_input_ids(input_ids)
 
-    def decode_token(self, tokens: list[int]) -> str:
+    def decode_token(self, tokens: list[int]) -> Any:
         return self.model.decode(tokens)
 
     def valid_len(self, text: str) -> int:
@@ -167,7 +167,10 @@ class LLMInterface:
 
         return builder.next_builder()
 
-    def choose_best_token(self, logits: list[float], allowed: set[int]) -> int:
+    def choose_best_token(
+            self,
+            logits: list[float],
+            allowed: set[int]) -> int | None:
         """
         Select the highest-scoring valid token.
 
@@ -219,13 +222,10 @@ class LLMInterface:
                 Generated JSON fragment containing the function name and
                 parameters.
         """
-        # 1. Copiar el contexto
         context = self.structure_context.model_copy(deep=True)
 
-        # 2. Crear el primer Builder
         builder = BuilderFunction(context)
 
-        # 3. Tokens del prompt (solo contexto del modelo)
         text = "You are an assistant that only outputs JSON.\n"
         text += "Available functions\n"
 
@@ -238,13 +238,11 @@ class LLMInterface:
 
         model_context = (func_descript + self.get_tokens(prompt))
 
-        # 4. Salida del JSON
-        output = []
+        output: list[str] = []
 
-        # 5. Generación restringida
         while builder is not None:
 
-            allowed = builder.get_allowed()
+            allowed: Any = builder.get_allowed()
 
             if not builder.unconditional() and not allowed:
                 builder = builder.next_builder()
@@ -259,5 +257,4 @@ class LLMInterface:
 
             builder = self.append_token(output, builder, token)
 
-        # 6. Decodificar
         return self.decode_token(output)
