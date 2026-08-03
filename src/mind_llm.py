@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from llm_sdk import Small_LLM_Model
+from llm_sdk.llm_sdk import Small_LLM_Model
 from .data_model import (
     FunctionDefinition,
     StructureContext,
@@ -197,7 +197,7 @@ class LLMInterface:
 
         return best_token
 
-    def generate_json(self, prompt: str) -> str:
+    def generate_json(self, prompt: str) -> Any:
         """
         Generate a JSON function call from a natural language prompt.
 
@@ -224,7 +224,7 @@ class LLMInterface:
         """
         context = self.structure_context.model_copy(deep=True)
 
-        builder = BuilderFunction(context)
+        builder: Builder | None = BuilderFunction(context)
 
         text = "You are an assistant that only outputs JSON.\n"
         text += "Available functions\n"
@@ -238,7 +238,7 @@ class LLMInterface:
 
         model_context = (func_descript + self.get_tokens(prompt))
 
-        output: list[str] = []
+        output: list[int] = []
 
         while builder is not None:
 
@@ -255,6 +255,8 @@ class LLMInterface:
             else:
                 token = self.choose_best_token(logits, allowed)
 
+            if token is None:
+                break
             builder = self.append_token(output, builder, token)
 
         return self.decode_token(output)

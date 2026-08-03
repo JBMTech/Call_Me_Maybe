@@ -30,7 +30,7 @@ def measure_time(function: Any) -> Any:
         before returning the original result.
     """
     @wraps(function)
-    def envelope(*args, **kwargs) -> Any:
+    def envelope(*args: Any, **kwargs: Any) -> Any:
         start = time.perf_counter()
 
         result = function(*args, **kwargs)
