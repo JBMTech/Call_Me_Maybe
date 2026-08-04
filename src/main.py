@@ -69,23 +69,19 @@ def cast_value(value: str, expected_type: str) -> Any:
     Returns:
         Any: Converted value using the expected Python type.
     """
-    try:
-        if expected_type == "number":
+    if expected_type == "number":
+        number = float(value)
 
-            number = float(value)
+        if number.is_integer():
+            return int(number)
 
-            if number.is_integer():
-                return int(number)
+        return number
 
-            return number
+    if expected_type == "integer":
+        return int(value)
 
-        if expected_type == "integer":
-            return int(value)
-
-        if expected_type == "boolean":
-            return value.lower() == "true"
-    except ValueError:
-        return value
+    if expected_type == "boolean":
+        return value.lower() == "true"
 
     return value
 
