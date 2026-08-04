@@ -40,7 +40,7 @@ def measure_time(function: Any) -> Any:
         total_time = end - start
         time_in_minutes = total_time / 60
         print(
-            f"\n[⏱️ Execution time of '{function.__name__}':"
+            f"\n[⏱️ Execution time of '{function.__name__}': "
             f"{time_in_minutes:.2f} minutes]"
         )
 
@@ -69,20 +69,23 @@ def cast_value(value: str, expected_type: str) -> Any:
     Returns:
         Any: Converted value using the expected Python type.
     """
-    if expected_type == "number":
+    try:
+        if expected_type == "number":
 
-        number = float(value)
+            number = float(value)
 
-        if number.is_integer():
-            return int(number)
+            if number.is_integer():
+                return int(number)
 
-        return number
+            return number
 
-    if expected_type == "integer":
-        return int(value)
+        if expected_type == "integer":
+            return int(value)
 
-    if expected_type == "boolean":
-        return value.lower() == "true"
+        if expected_type == "boolean":
+            return value.lower() == "true"
+    except ValueError:
+        return value
 
     return value
 

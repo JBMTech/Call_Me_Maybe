@@ -1,0 +1,287 @@
+[
+    {
+      "name": "fn_add_numbers",
+      "description": "Add two numbers together and return their sum.",
+      "parameters": {
+        "a": {
+          "type": "number"
+        },
+        "b": {
+          "type": "number"
+        }
+      },
+      "returns": {
+        "type": "number"
+      }
+    },
+    {
+      "name": "fn_multiply_numbers",
+      "description": "Multiply two numbers.",
+      "parameters": {
+        "a": {
+          "type": "number"
+        },
+        "b": {
+          "type": "number"
+        }
+      },
+      "returns": {
+        "type": "number"
+      }
+    },
+    {
+      "name": "fn_divide_numbers",
+      "description": "Divide one number by another.",
+      "parameters": {
+        "numerator": {
+          "type": "number"
+        },
+        "denominator": {
+          "type": "number"
+        }
+      },
+      "returns": {
+        "type": "number"
+      }
+    },
+    {
+      "name": "fn_percentage",
+      "description": "Calculate a percentage of a number.",
+      "parameters": {
+        "percentage": {
+          "type": "number"
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "returns": {
+        "type": "number"
+      }
+    },
+    {
+      "name": "fn_get_square_root",
+      "description": "Calculate the square root of a number.",
+      "parameters": {
+        "value": {
+          "type": "number"
+        }
+      },
+      "returns": {
+        "type": "number"
+      }
+    },
+    {
+      "name": "fn_round_float",
+      "description": "Round a floating point number to a specified number of decimal places.",
+      "parameters": {
+        "value": {
+          "type": "number"
+        },
+        "decimals": {
+          "type": "number"
+        }
+      },
+      "returns": {
+        "type": "number"
+      }
+    },
+    {
+      "name": "fn_is_even",
+      "description": "Determine whether a number is even.",
+      "parameters": {
+        "value": {
+          "type": "number"
+        }
+      },
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    {
+      "name": "fn_negate_boolean",
+      "description": "Invert a boolean value.",
+      "parameters": {
+        "value": {
+          "type": "boolean"
+        }
+      },
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    {
+      "name": "fn_greet",
+      "description": "Generate a greeting for a person.",
+      "parameters": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "returns": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "fn_reverse_string",
+      "description": "Reverse a string.",
+      "parameters": {
+        "text": {
+          "type": "string"
+        }
+      },
+      "returns": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "fn_to_uppercase",
+      "description": "Convert a string to uppercase.",
+      "parameters": {
+        "text": {
+          "type": "string"
+        }
+      },
+      "returns": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "fn_to_lowercase",
+      "description": "Convert a string to lowercase.",
+      "parameters": {
+        "text": {
+          "type": "string"
+        }
+      },
+      "returns": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "fn_word_count",
+      "description": "Count the number of words in a string.",
+      "parameters": {
+        "text": {
+          "type": "string"
+        }
+      },
+      "returns": {
+        "type": "number"
+      }
+    },
+    {
+      "name": "fn_substitute_string_with_regex",
+      "description": "Replace all occurrences matching a regex pattern in a string.",
+      "parameters": {
+        "source_string": {
+          "type": "string"
+        },
+        "regex": {
+          "type": "string"
+        },
+        "replacement": {
+          "type": "string"
+        }
+      },
+      "returns": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "fn_concat_strings",
+      "description": "Concatenate two strings using a separator.",
+      "parameters": {
+        "left": {
+          "type": "string"
+        },
+        "right": {
+          "type": "string"
+        },
+        "separator": {
+          "type": "string"
+        }
+      },
+      "returns": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "fn_repeat_string",
+      "description": "Repeat a string a specified number of times.",
+      "parameters": {
+        "text": {
+          "type": "string"
+        },
+        "count": {
+          "type": "number"
+        }
+      },
+      "returns": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "fn_average_numbers",
+      "description": "Calculate the average of a list of numbers.",
+      "parameters": {
+        "values": {
+          "type": "array<number>"
+        }
+      },
+      "returns": {
+        "type": "number"
+      }
+    },
+    {
+      "name": "fn_string_contains",
+      "description": "Check whether a string contains a substring.",
+      "parameters": {
+        "text": {
+          "type": "string"
+        },
+        "substring": {
+          "type": "string"
+        }
+      },
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    {
+      "name": "fn_compare_values",
+      "description": "Compare two values for equality without implicit type conversion.",
+      "parameters": {
+        "left": {
+          "type": "any"
+        },
+        "right": {
+          "type": "any"
+        }
+      },
+      "returns": {
+        "type": "boolean"
+      }
+    },
+    {
+      "name": "fn_format_message",
+      "description": "Format a message using multiple parameter types.",
+      "parameters": {
+        "prefix": {
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "precision": {
+          "type": "number"
+        }
+      },
+      "returns": {
+        "type": "string"
+      }
+    }
+  ]

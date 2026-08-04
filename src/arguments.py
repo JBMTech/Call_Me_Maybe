@@ -1,5 +1,6 @@
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any
 from pydantic import ValidationError
@@ -77,16 +78,16 @@ def get_functions_definition(args: Any) -> list[FunctionDefinition]:
         return funciones
     except FileNotFoundError:
         print('File was not found.')
-        raise
+        sys.exit(1)
     except PermissionError:
         print('Not enough permissions to open file.')
-        raise
+        sys.exit(1)
     except json.JSONDecodeError:
         print('Functions_definition file invalid json.')
-        raise
+        sys.exit(1)
     except ValidationError as e:
         print(f"Invalid data structure: {e}")
-        raise
+        sys.exit(1)
 
 
 def get_functions_calling_tests(args: Any) -> list[TestPrompt]:
@@ -125,13 +126,13 @@ def get_functions_calling_tests(args: Any) -> list[TestPrompt]:
         return prompts
     except FileNotFoundError:
         print('File was not found.')
-        raise
+        sys.exit(1)
     except PermissionError:
         print('Not enough permissions to open file.')
-        raise
+        sys.exit(1)
     except json.JSONDecodeError:
         print('Functions_calling_test file invalid json.')
-        raise
+        sys.exit(1)
     except ValidationError as e:
         print(f"Invalid data structure: {e}")
-        raise
+        sys.exit(1)

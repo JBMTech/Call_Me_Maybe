@@ -1,0 +1,119 @@
+[
+    {
+      "prompt": "Add -100 and 250.75"
+    },
+    {
+      "prompt": "Add 999999999999999 and 1"
+    },
+    {
+      "prompt": "Multiply 3.5 by 2"
+    },
+    {
+      "prompt": "Divide 10 by 0"
+    },
+    {
+      "prompt": "Calculate the percentage: 15% of 240"
+    },
+    {
+      "prompt": "Calculate the square root of -25"
+    },
+    {
+      "prompt": "Round 3.1415926535 to 4 decimal places"
+    },
+    {
+      "prompt": "Is 42 an even number?"
+    },
+    {
+      "prompt": "Negate the boolean true"
+    },
+    {
+      "prompt": "Negate the boolean false"
+    },
+    {
+      "prompt": "Negate the value 'true'"
+    },
+    {
+      "prompt": "Greet Alice"
+    },
+    {
+      "prompt": "Greet José 🚀"
+    },
+    {
+      "prompt": "Greet \"\""
+    },
+    {
+      "prompt": "Reverse the string 'hello world'"
+    },
+    {
+      "prompt": "Reverse the string ''"
+    },
+    {
+      "prompt": "Reverse the string '😀🙃🔥'"
+    },
+    {
+      "prompt": "Convert 'OpenAI GPT' to uppercase"
+    },
+    {
+      "prompt": "Convert '' to lowercase"
+    },
+    {
+      "prompt": "Count the words in 'The quick brown fox jumps over the lazy dog'"
+    },
+    {
+      "prompt": "Count the words in ''"
+    },
+    {
+      "prompt": "Replace all digits in 'User123-Test456' with '#'"
+    },
+    {
+      "prompt": "Replace all vowels in 'Programming is fun' with '*'"
+    },
+    {
+      "prompt": "Replace all whitespace in 'A   B\tC\nD' with '-'"
+    },
+    {
+      "prompt": "Replace the word 'cat' with 'dog' in 'The cat chased another cat'"
+    },
+    {
+      "prompt": "Concatenate 'Hello' and 'World' using ', ' as separator"
+    },
+    {
+      "prompt": "Repeat the string 'abc' 5 times"
+    },
+    {
+      "prompt": "Repeat the string 'abc' -1 times"
+    },
+    {
+      "prompt": "Calculate the average of 10, 20, 30, and 40"
+    },
+    {
+      "prompt": "Calculate the average of 1e308 and 1e308"
+    },
+    {
+      "prompt": "Check whether 'OpenAI' contains 'AI'"
+    },
+    {
+      "prompt": "Check whether '' contains 'AI'"
+    },
+    {
+      "prompt": "Compare 10 and '10'"
+    },
+    {
+      "prompt": "Add the values 'five' and 3"
+    },
+    {
+      "prompt": "Reverse the number 12345"
+    },
+    {
+      "prompt": "Replace numbers in 12345 with X"
+    },
+    {
+      "prompt": "Compute something interesting"
+    },
+    {
+      "prompt": "Do the thing"
+    },
+    {
+      "prompt": "Use all parameters: concatenate 'foo', 'bar', separator '-', uppercase true"
+    }
+  ]

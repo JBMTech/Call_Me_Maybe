@@ -122,7 +122,7 @@ class LLMInterface:
             return builder
 
         # -----------------------------
-        # CASO NORMAL
+        # CASE ORDINARY
         # -----------------------------
         if not isinstance(builder, BuilderValue):
             builder.tokens.append(token)
@@ -134,10 +134,8 @@ class LLMInterface:
             return builder
 
         # -----------------------------
-        # CASO BuilderValue
+        # CASE BuilderValue
         # -----------------------------
-
-        # Primera vez que entramos en este Builder
         if not builder.tokens:
             builder.output_start = len(output)
 
@@ -147,12 +145,9 @@ class LLMInterface:
 
         longitud = self.valid_len(texto)
 
-        # Sigue siendo un valor válido
         if longitud == len(texto):
             output.append(token)
             return builder
-
-        # Hay basura después del valor
 
         texto_valido = texto[:longitud]
 
@@ -160,7 +155,6 @@ class LLMInterface:
 
         builder.tokens = tokens_validos
 
-        # Sustituimos TODO el valor anterior
         output[:] = output[:builder.output_start]
 
         output.extend(tokens_validos)
