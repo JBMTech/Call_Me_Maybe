@@ -17,6 +17,7 @@ clean:
 
 fclean: clean
 	rm -rf .venv
+	rm -rf data/output
 
 lint:
 	uv run flake8 --exclude=.venv,llm_sdk .
