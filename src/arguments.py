@@ -35,7 +35,7 @@ def get_arguments() -> Any:
     parser.add_argument(
         '-o', '--output',
         type=str,
-        default='data/output/function_calling_result.json',
+        default='data/output/function_calling_results.json',
         required=False,
         help="Path of the output JSON file.")
 
@@ -77,7 +77,7 @@ def get_functions_definition(args: Any) -> list[FunctionDefinition]:
         ]
         return funciones
     except FileNotFoundError:
-        print('File was not found.')
+        print(f'File ({args.functions_definition}) was not found.')
         sys.exit(1)
     except PermissionError:
         print('Not enough permissions to open file.')
@@ -125,7 +125,7 @@ def get_functions_calling_tests(args: Any) -> list[TestPrompt]:
         ]
         return prompts
     except FileNotFoundError:
-        print('File was not found.')
+        print(f'File ({args.input}) was not found.')
         sys.exit(1)
     except PermissionError:
         print('Not enough permissions to open file.')

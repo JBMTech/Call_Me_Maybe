@@ -6,7 +6,10 @@ run:
 		uv run python -m src.main \
 		--functions_definition data/input/functions_definition.json \
 		--input data/input/function_calling_tests.json \
-		--output data/output//function_calls.json
+		--output data/output/function_calling_results.json
+
+help:
+		uv run python -m src.main --help
 
 debug:
 		uv run python3 -m pdb -m src
@@ -29,4 +32,4 @@ lint:
             --check-untyped-defs \
             --exclude '^(venv|\.venv|env|llm_sdk)/'
 
-.PHONY: install run debug clean fclean lint
+.PHONY: install run help debug clean fclean lint

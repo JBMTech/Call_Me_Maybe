@@ -53,6 +53,20 @@ uv run python -m src.main \
     --output data/output/function_calling_results.json
 ```
 
+### ▶️ Other commands
+
+```bash
+make help  # Syntax for executing a Python script.
+
+make debug  # Run the Python file with the interactive debugger (pdb).
+
+make clean  # Deletes temporary files and Python caches (__pycache__ and .mypy_cache).
+
+make fclean  # Delete EVERYTHING generated, including .venv and the output directory.
+
+make lint  # Analyze the style of Python code (requires flake8 and mypy).
+```
+
 ### 🔹 Input files
 
 The program expects two input files:

@@ -25,5 +25,11 @@
   },
   {
     "prompt": "Repeat 123 four times."
+  },
+  {
+    "prompt": "Disable dark mode."
+  },
+  {
+    "prompt": "Turn notifications on."
   }
 ]
